@@ -87,7 +87,6 @@ class NightCoverageAlerts:
                 night_shift = event
                 break
                 
-        print(event['start'].get('dateTime', event['start'].get('date')), event['summary'])
 
         volunteers = get_volunteer_names(night_shift['summary'])
         if volunteers:
