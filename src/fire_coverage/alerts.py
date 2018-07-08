@@ -14,6 +14,7 @@ gcal_color_map = {'yellow': 5,
                   'green': 10,
                   'red': 11}
 
+
 from os.path import join
 from os import environ
 
@@ -26,8 +27,10 @@ class NightCoverageAlerts:
         from apiclient.discovery import build
         from httplib2 import Http
         from oauth2client import file, client, tools
+        import logging
         
         self.gcal_name = gcal_name
+        self.logger = logging.getLogger(__name__)
         
         # Setup the Calendar API
         SCOPES = 'https://www.googleapis.com/auth/calendar'
@@ -90,19 +93,21 @@ class NightCoverageAlerts:
 
         volunteers = get_volunteer_names(night_shift['summary'])
         if volunteers:
-            print("The following are signed up for tonight:")
+            self.logger.debug("The following are signed up for tonight:")
             for vol in volunteers:
-                print("   %s" % vol)
+                self.logger.debug("   %s" % vol)
                 self.__send_alert(AlertLevel.NO_ALERT)
                 event_color = 'green'                    
         else:
             today = datetime.datetime.today()
-            noon = datetime.datetime(today.year, today.month, today.day, 12)
-            eightpm = datetime.datetime(today.year, today.month, today.day, 20)            
+            noon = datetime.datetime(today.year, today.month, today.day, 11, 59)
+            eightpm = datetime.datetime(today.year, today.month, today.day, 19, 59)            
             now = datetime.datetime.now()
             
+            self.logger.debug('No coverage.')
             if now < noon:
                 event_color = 'yellow'
+                self.__send_alert(AlertLevel.NO_ALERT)
             if now > noon and now < eightpm:
                 event_color = 'orange'
                 self.__send_alert(AlertLevel.WARNING)

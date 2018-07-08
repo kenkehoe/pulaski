@@ -17,10 +17,10 @@ class GMail:
         
         # Setup the GMail API
         SCOPES = 'https://www.googleapis.com/auth/gmail.modify'
-        store = file.Storage(join(config_path, 'gmail_credentials.json'))
+        store = file.Storage(join(config_path, 'nfv_gmail_credentials.json'))
         creds = store.get()
         if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(join(config_path,'gmail_client_secret.json'), SCOPES)
+            flow = client.flow_from_clientsecrets(join(config_path,'nfv_gmail_client_secret.json'), SCOPES)
             creds = tools.run_flow(flow, store)
         self.service = build('gmail', 'v1', http=creds.authorize(Http()))
 
@@ -39,7 +39,6 @@ class GMail:
         
         message = MIMEText(body)
         message['to'] = to 
-        #message['from'] = 'nedfire.vols@gmail.com'
         message['subject'] = subject
         raw = base64.urlsafe_b64encode(message.as_bytes())
         return {'raw': raw.decode()}
@@ -59,13 +58,13 @@ class GMail:
             to = ''.join(email_list)
 
             if alert_level == AlertLevel.WARNING:            
-                body = "All is not good."
-                subject = 'NedFire Volunteers - Please help out tonight. '
+                body = "To sign up for tonight's shift, simply respond to this email."
+                subject = '[NedFire Volunteers] Please help out tonight. '
                 message = self._create_message(body, to, subject)
                 
             if alert_level == AlertLevel.SEVERE:            
-                body = "All is really not good."
-                subject = 'NedFire Volunteers - PLEEEAAASE help out tonight. Pretty please?'
+                body = "To sign up for tonight's shift, simply respond to this email."
+                subject = '[NedFire Volunteers] PLEEEAAASE help out tonight. Pretty please?'
                 message = self._create_message(body, to, subject)            
 
         try:
