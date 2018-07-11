@@ -1,7 +1,4 @@
 
-from enum import Enum
-from os.path import join
-from os import environ
 
 def get_volunteer_names_from_summary(event_summary):
     '''
@@ -27,11 +24,15 @@ def extract_email(string):
     assert('@' in email)
     return email
 
+from os.path import join
+from os import environ
+
 class SignUpBot:
 
     def __init__(self,
                  gcal_name = 'Nederland Fire',
-                 config_path = join(environ['HOME'], '.fire_coverage')):
+                 config_path = join(environ['HOME'], '.fire_coverage'),
+                 test = False):
 
         import logging
         from .members import Members
@@ -39,7 +40,8 @@ class SignUpBot:
         from .gsuite.gcalendar import GCalendar
 
         self.logger = logging.getLogger(__name__)
-
+        self.test = test
+        
         credentials_path = join(config_path, 'nfv_gmail_credentials.json')
         secret_credentials_path = join(config_path, 'nfv_gmail_client_secret.json')
         scopes = GMail.Scopes.READONLY
@@ -54,7 +56,7 @@ class SignUpBot:
         members_filename = join(config_path, 'members')
         self.members = Members(members_filename)
                         
-    def check_email(self, test = False):
+    def check_email(self):
 
         import datetime
         
@@ -74,7 +76,7 @@ class SignUpBot:
 
                 # Only need the header data for now.
                 m = self.gmail.messages_get(id = message['id'], format = 'metadata')
-                if not test:
+                if not self.test:
                     # Mark this email as 'read' but only when live
                     self.gmail.messages_modify(id = m['id'], body = {'removeLabelIds': ['UNREAD']})
                 
@@ -107,7 +109,9 @@ class SignUpBot:
             if 'Night' in event['summary']:
                 return event
 
-    def update_calendar(self, email_list, test = False):
+    def update_calendar(self, email_list):
+
+        from .gsuite.gcalendar import GCalendar
 
         night_shift = self.get_night_shift_event()        
         names = get_volunteer_names_from_summary(night_shift['summary'])
@@ -123,7 +127,7 @@ class SignUpBot:
             
             night_shift['colorId'] = GCalendar.ColorID.BASIL.value
             night_shift['summary'] = summary
-            if not test:
+            if not self.test:
                 self.gcal.update_event(night_shift)
             return True
         return False
