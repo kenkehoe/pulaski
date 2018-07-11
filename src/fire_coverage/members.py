@@ -13,8 +13,10 @@ class Members:
         self.members = dict()
         
         if exists(self.filename):
-            with open(filename, 'rb') as f:
+            with open(self.filename, 'rb') as f:
                 self.members = pickle.load(f)
+        else:
+            self.logger.warning("File %s does not exist.  A new file will be created." % self.filename)
 
     def add_member(self, email, entry):
         self.members[email] = entry
