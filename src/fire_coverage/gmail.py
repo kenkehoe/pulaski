@@ -4,8 +4,9 @@ from os import environ
 
 class AlertLevel(Enum):
     NO_ALERT = 0
-    WARNING = 1
-    SEVERE = 2
+    CAUTION = 1
+    WARNING = 2
+    SEVERE = 3
 
 class GMail:
 
@@ -47,11 +48,13 @@ class GMail:
 
         from apiclient import errors
         
-        if alert_level == AlertLevel.NO_ALERT:
+        if alert_level == AlertLevel.NO_ALERT or alert_level == AlertLevel.CAUTION:
             # send an email to myself, just to know the system is running
-            body = "All is good."
             to = 'alex.r.olivas@gmail.com'
-            subject = 'NFPD is covered tonight'
+            body = "All is good." if alert_level == AlertLevel.NO_ALERT\
+                   else 'I hope someone signs up today.'
+            subject = 'NFPD is covered tonight' if alert_level == AlertLevel.NO_ALERT\
+                      else 'Caution - No coverage tonight yet.'
             message = self._create_message(body, to, subject)
         else:
             email_list = [v+',' for k,v in self.member_email_dict.items()]
