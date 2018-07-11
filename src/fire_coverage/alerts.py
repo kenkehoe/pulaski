@@ -107,7 +107,7 @@ class NightCoverageAlerts:
             self.logger.debug('No coverage.')
             if now < noon:
                 event_color = 'yellow'
-                self.__send_alert(AlertLevel.NO_ALERT)
+                self.__send_alert(AlertLevel.CAUTION)
             if now > noon and now < eightpm:
                 event_color = 'orange'
                 self.__send_alert(AlertLevel.WARNING)
