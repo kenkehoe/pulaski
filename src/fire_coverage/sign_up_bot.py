@@ -41,6 +41,7 @@ class SignUpBot:
 
         self.logger = logging.getLogger(__name__)
         self.test = test
+        self.logger.info("%s" % "Test" if self.test else "Production")
         
         credentials_path = join(config_path, 'nfv_gmail_credentials.json')
         secret_credentials_path = join(config_path, 'nfv_gmail_client_secret.json')
