@@ -23,7 +23,9 @@ class NightCoverageAlerts:
         from .gsuite.gcalendar import GCalendar
 
         self.logger = logging.getLogger(__name__)
-
+        self.test = test
+        self.logger.info("%s" % "Test" if self.test else "Production")
+        
         credentials_path = join(config_path, 'nfv_gmail_credentials.json')
         secret_credentials_path = join(config_path, 'nfv_gmail_client_secret.json')
         scopes = GMail.Scopes.READONLY
@@ -37,7 +39,6 @@ class NightCoverageAlerts:
                                      
         members_filename = join(config_path, 'members')
         self.members = Members(members_filename)
-        self.test = test
                 
     def __send_alert(self, alert_level):
         
