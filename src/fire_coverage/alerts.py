@@ -87,6 +87,8 @@ class NightCoverageAlerts:
         
     def go(self):
 
+        import datetime
+
         from .utilities import get_volunteer_names_from_summary
         from .gsuite.gcalendar import GCalendar
         
