@@ -133,15 +133,16 @@ class SignUpBot:
             return True
         return False
                         
-    def go(self, frequency = 10):
+    def go(self, frequency = 1, duration = 60):
         '''
-        Check email every 'frequency' minutes.
+        Check email every 'frequency' minutes for 'duration' minutes.
         '''        
         import time
 
         self.logger.debug("go")
-        
-        while True:
+
+        n_cycles = duration / frequency
+        for _ in range(n_cycles):
             email_list = self.check_email()
             if email_list:
                 self.update_calendar(email_list)
