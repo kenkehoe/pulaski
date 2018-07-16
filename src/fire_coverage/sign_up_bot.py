@@ -114,7 +114,7 @@ class SignUpBot:
 
         from .gsuite.gcalendar import GCalendar
 
-        night_shift = self.get_night_shift_event()        
+        night_shift = self.get_night_shift_event()
         names = get_volunteer_names_from_summary(night_shift['summary'])
         start_size = len(names)
 
@@ -125,25 +125,25 @@ class SignUpBot:
             vlist = ''.join(volunteers).rstrip(',') # remove the last comma
             summary = 'Night (%s)' % vlist
             self.logger.debug('summary = %s' % summary)
-            
+
             night_shift['colorId'] = GCalendar.ColorID.BASIL.value
             night_shift['summary'] = summary
             if not self.test:
                 self.gcal.update_event(night_shift)
             return True
         return False
-                        
-    def go(self, frequency = 1, duration = 60):
+
+    def go(self, frequency = 60, duration = 3600):
         '''
         Check email every 'frequency' minutes for 'duration' minutes.
-        '''        
+        '''
         import time
 
         self.logger.debug("go")
 
-        n_cycles = duration / frequency
+        n_cycles = int(duration/frequency) if duration > frequency else 1
         for _ in range(n_cycles):
             email_list = self.check_email()
             if email_list:
                 self.update_calendar(email_list)
-            time.sleep(frequency * 60)
+        time.sleep(frequency)
