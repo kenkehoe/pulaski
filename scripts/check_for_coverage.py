@@ -16,4 +16,7 @@ file_h.setFormatter(format_h)
 alert = NightCoverageAlerts()
 alert.logger.addHandler(file_h)
 alert.logger.setLevel(logging.DEBUG)
-alert.go()
+try:
+    alert.go()
+except Exception as error:
+    alert.logger.error(str(error))

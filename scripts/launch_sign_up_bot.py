@@ -16,4 +16,8 @@ file_h.setFormatter(format_h)
 sign_up_bot = SignUpBot()
 sign_up_bot.logger.addHandler(file_h)
 sign_up_bot.logger.setLevel(logging.DEBUG)
-sign_up_bot.go()
+try:
+    sign_up_bot.go()
+except Exception as error:
+    sign_up_bot.logger.error(str(error))
+

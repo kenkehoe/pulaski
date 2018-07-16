@@ -145,5 +145,6 @@ class SignUpBot:
         for _ in range(n_cycles):
             email_list = self.check_email()
             if email_list:
+                self.logger.debug("someone volunteered. updating calendar...")            
                 self.update_calendar(email_list)
-        time.sleep(frequency)
+            time.sleep(frequency)
