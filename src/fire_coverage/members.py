@@ -19,8 +19,18 @@ class Members:
             self.logger.warning("File %s does not exist.  A new file will be created." % self.filename)
 
     def add_member(self, email, entry):
+        assert('@' in email)
         self.members[email] = entry
                 
+    def remove_member(self, email):
+        del self.members[email]
+
+    def __str__(self):
+        result = ''
+        for kv_pair in self.members.items():
+            result += '%s : %s\n' % kv_pair
+        return result
+        
     def __del__(self):
         with open(self.filename, 'wb') as f:
             pickle.dump(self.members, f)
