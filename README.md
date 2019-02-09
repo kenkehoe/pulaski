@@ -1,1 +1,3 @@
 # fire_coverage
+
+## Introduction
