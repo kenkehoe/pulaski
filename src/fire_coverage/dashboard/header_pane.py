@@ -35,11 +35,22 @@ single_date = \
                                       dt.now())]
              )
 
+calendar = html.Div([html.Div([html.Button('<', id='previous-month-button', className = 'four columns'),
+                              html.Div('February', id='current-month', className = 'four columns'),
+                               html.Button('>', id='next-month-button', className = 'four columns')],
+                              className = 'row'),
+                     html.Div([html.Button('<', id='previous-year-button', className = 'four columns'),
+                               html.Div('2019', id='current-year', className = 'four columns'),
+                               html.Button('>', id='next-year-button', className = 'four columns')],
+                              className = 'row'),
+                     html.Table(id='calendar-table')])
+
 header_pane = html.Div([html.H1("Nederland Fire Protection District"),
                         html.H2("Volunteer Night Shift Sign Up"),
                         html.Hr(),                        
                         member_list_dropdown,
-                        html.Hr(),                        
+                        html.Hr(),
+                        calendar,
                         single_date,                             
                         html.Div(id='dates-selected'),
                         html.Hr(),
