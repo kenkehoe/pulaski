@@ -43,7 +43,8 @@ calendar = html.Div([html.Div([html.Button('<', id='previous-month-button', clas
                                html.Div('2019', id='current-year', className = 'four columns'),
                                html.Button('>', id='next-year-button', className = 'four columns')],
                               className = 'row'),
-                     html.Table(id='calendar-table')])
+                     html.Table(id='calendar-table', style = {'display': 'inline-block'})],
+                    style = {'width' : '100%'})
 
 header_pane = html.Div([html.H1("Nederland Fire Protection District"),
                         html.H2("Volunteer Night Shift Sign Up"),
