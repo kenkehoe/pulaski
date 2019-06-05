@@ -13,19 +13,21 @@ class HoboDB:
         from os.path import exists
         
         self.logger = logging.getLogger(__name__)
-        self.filename = filename
+        self.__filename = filename
+
+        # 'collections'
         self.members = dict()
+        self.signups = dict()
         
-        if exists(self.filename):
-            with open(self.filename, 'rb') as f:
+        if exists(self.__filename):
+            with open(self.__filename, 'rb') as f:
                 self.members = pickle.load(f)
-                print(self.members)
         else:
-            self.logger.warning("File %s does not exist.  A new file will be created." % self.filename)
-            makedirs(dirname(self.filename))
+            self.logger.warning("File %s does not exist.  A new file will be created." % self.__filename)
+            makedirs(dirname(self.__filename))
 
     def write(self):
-        with open(self.filename, 'wb') as f:
+        with open(self.__filename, 'wb') as f:
             pickle.dump(self.members, f)
         
     def __str__(self):

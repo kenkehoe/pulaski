@@ -3,7 +3,7 @@
 import argparse
 
 parser = argparse.ArgumentParser(description='Edit member database (i.e. pickle file).')
-parser.add_argument('--nickname', '-n', dest='nickname')
+parser.add_argument('--name', '-n', dest='name')
 parser.add_argument('--email', '-e', dest='email')
 parser.add_argument('--pprint', '-p', dest='pprint', action='store_true', default = False)
 parser.add_argument('--add', '-a', dest='add', action='store_true', default = False)
@@ -13,18 +13,19 @@ args = parser.parse_args()
 from os import environ
 from os.path import join
 
-from fire_coverage.hobo_db import HoboDB
-
-filename = join(environ['HOME'], '.fire_coverage', 'members')
-db = HoboDB(filename)
+from pymongo import MongoClient
+client = MongoClient('mongodb://localhost:27017/')
+db = client['fire_coverage']
 
 if args.add:
-    db.members[args.email] = args.nickname
+    member_collection = db['members']
+    members = member_collection.insert_one({'name': args.name, 'email': args.email})
     
 if args.remove:
-    del db.members[args.email]
-
-if args.pprint:
-    print(str(db))
-
-print("There are %d members in %s." % (len(db.members), filename))
+    member_collection = db['members']
+    if args.name:
+        member = member_collection.remove({'name': args.name})
+    elif args.email:
+        member = member_collection.remove({'email': args.email})
+                
+print("There are %d members." % db.members.count_documents({}))

@@ -37,8 +37,11 @@ class NightCoverageAlerts:
         self.gcal = GCalendar(credentials_path, secret_credentials_path, scopes)        
         self.gcal.select_calendar(gcal_name)
                                      
-        self.members = HoboDB().members
-                
+        from pymongo import MongoClient
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client['fire_coverage']
+        member_names = {d['email']:d['name'] for d in db.members.find()}
+        
     def __send_alert(self, alert_level):
         
         if alert_level == self.AlertLevel.NO_ALERT:

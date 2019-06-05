@@ -35,7 +35,6 @@ class SignUpBot:
                  test = False):
 
         import logging
-        from fire_coverage.hobo_db import HoboDB
         from fire_coverage.gsuite.gmail import GMail
         from fire_coverage.gsuite.gcalendar import GCalendar
 
@@ -53,8 +52,14 @@ class SignUpBot:
         scopes = GCalendar.Scopes.MODIFY
         self.gcal = GCalendar(credentials_path, secret_credentials_path, scopes)        
         self.gcal.select_calendar(gcal_name)
-                                     
-        self.members = HoboDB().members
+
+        from pymongo import MongoClient
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client['fire_coverage']
+
+        self.members = dict()
+        for memeber_document in db['members'].find({}):
+            self.members[member_document['email']] = member_document['name']
                         
     def check_email(self):
 

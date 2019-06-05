@@ -9,9 +9,6 @@ from serve_layout import serve_layout
 
 app = dash.Dash('Fire Dash')
 app.layout = serve_layout()
-app.css.append_css({
-    'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
-})
 
 dates = set()
 
@@ -36,7 +33,13 @@ def update_output_div(single_date, op):
      Input(component_id='member-list-dropdown', component_property='value')]
 )
 def signup(n_clicks, member_name):
+
     if member_name:
+
+        from pymongo import MongoClient
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client['fire_coverage']
+                
         result = 'Thanks {}!\n'.format(member_name)
         result += 'You are signed up for the following shifts:\n'
         return result + ', '.join(map(str, dates))
@@ -105,10 +108,12 @@ def generate_calendar(current_month, current_year):
 
     import random
     import calendar
-    from fire_coverage.hobo_db import HoboDB
 
-    db = HoboDB()
-    member_names = [n for n in db.members.values()]
+    from pymongo import MongoClient
+    client = MongoClient('mongodb://localhost:27017/')
+    db = client['fire_coverage']
+
+    member_names = [d['name'] for d in db.members.find()]
     
     months = ['January', 'February', 'March', 'April',              
               'May', 'June', 'July', 'August', 'September',              

@@ -3,9 +3,11 @@ from datetime import datetime as dt
 import dash_core_components as dcc
 import dash_html_components as html
 
-from fire_coverage.hobo_db import HoboDB
+from pymongo import MongoClient
+client = MongoClient('mongodb://localhost:27017/')
+db = client['fire_coverage']
+member_names = [d['name'] for d in db.members.find()]
 
-member_list = HoboDB().members.values()
 member_list_dropdown = dcc.Dropdown(id = 'member-list-dropdown',
                                     options = [{'label': i, 'value': i} for i in member_list],
                                     placeholder = 'Member Selection')
