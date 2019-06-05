@@ -5,7 +5,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
-from fire_coverage.dashboard.serve_layout import serve_layout
+from serve_layout import serve_layout
 
 app = dash.Dash('Fire Dash')
 app.layout = serve_layout()
@@ -103,7 +103,12 @@ def change_year(previous_year_click_timestamp,
                Input('current-year', 'children')])
 def generate_calendar(current_month, current_year):
 
+    import random
     import calendar
+    from fire_coverage.hobo_db import HoboDB
+
+    db = HoboDB()
+    member_names = [n for n in db.members.values()]
     
     months = ['January', 'February', 'March', 'April',              
               'May', 'June', 'July', 'August', 'September',              
@@ -116,14 +121,14 @@ def generate_calendar(current_month, current_year):
 
     days = ['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun']
     header = [html.Tr([html.Th(day) for day in days])]
-    #body = [html.Tr([html.Td(day) if day > 0 else html.Td('') for day in week]) for week in cal]
     body = list()
     for week in cal:
         row = list()
         for day in week:
             if day > 0:
-                day_header = html.Tr([html.Th(day)])
-                day_row = html.Tr([html.Td('Olivas')])
+                day_header = html.Tr([html.Th(day)])                
+                member_name = random.choice(member_names)
+                day_row = html.Tr([html.Td(member_name)])
                 day_table = html.Table([day_header, day_row])
                 row.append(html.Td(day_table))
             else:

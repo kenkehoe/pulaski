@@ -35,9 +35,9 @@ class SignUpBot:
                  test = False):
 
         import logging
-        from .members import Members
-        from .gsuite.gmail import GMail
-        from .gsuite.gcalendar import GCalendar
+        from fire_coverage.hobo_db import HoboDB
+        from fire_coverage.gsuite.gmail import GMail
+        from fire_coverage.gsuite.gcalendar import GCalendar
 
         self.logger = logging.getLogger(__name__)
         self.test = test
@@ -54,8 +54,7 @@ class SignUpBot:
         self.gcal = GCalendar(credentials_path, secret_credentials_path, scopes)        
         self.gcal.select_calendar(gcal_name)
                                      
-        members_filename = join(config_path, 'members')
-        self.members = Members(members_filename)
+        self.members = HoboDB().members
                         
     def check_email(self):
 

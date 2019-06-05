@@ -13,18 +13,18 @@ args = parser.parse_args()
 from os import environ
 from os.path import join
 
-from fire_coverage.members import Members
+from fire_coverage.hobo_db import HoboDB
 
 filename = join(environ['HOME'], '.fire_coverage', 'members')
-m = Members(filename)
+db = HoboDB(filename)
 
 if args.add:
-    m.add_member(args.email, args.nickname)
+    db.members[args.email] = args.nickname
     
 if args.remove:
-    m.remove_member(args.email)
+    del db.members[args.email]
 
 if args.pprint:
-    print(str(m))
+    print(str(db))
 
-print("There are %d members in %s." % (len(m.members), filename))
+print("There are %d members in %s." % (len(db.members), filename))

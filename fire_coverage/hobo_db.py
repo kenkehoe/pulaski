@@ -6,9 +6,9 @@ from os.path import exists
 from os.path import dirname
 from os.path import join
 
-class Members:
+class HoboDB:
     
-    def __init__(self, filename = join(environ["HOME"], '.fire_coverage', 'members')):
+    def __init__(self, filename = join(environ["HOME"], '.fire_coverage', 'hobo_db')):
         import logging
         from os.path import exists
         
@@ -19,17 +19,15 @@ class Members:
         if exists(self.filename):
             with open(self.filename, 'rb') as f:
                 self.members = pickle.load(f)
+                print(self.members)
         else:
             self.logger.warning("File %s does not exist.  A new file will be created." % self.filename)
             makedirs(dirname(self.filename))
 
-    def add_member(self, email, entry):
-        assert('@' in email)
-        self.members[email] = entry
-                
-    def remove_member(self, email):
-        del self.members[email]
-
+    def write(self):
+        with open(self.filename, 'wb') as f:
+            pickle.dump(self.members, f)
+        
     def __str__(self):
         result = ''
         for kv_pair in self.members.items():
@@ -37,6 +35,4 @@ class Members:
         return result
         
     def __del__(self):
-        with open(self.filename, 'wb') as f:
-            pickle.dump(self.members, f)
-            
+        self.write()            
