@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import datetime
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -39,7 +41,25 @@ def signup(n_clicks, member_name):
         from pymongo import MongoClient
         client = MongoClient('mongodb://localhost:27017/')
         db = client['fire_coverage']
-                
+
+        for d in dates:
+            year = int(d.split('-')[0])
+            month = int(d.split('-')[1])
+            day = int(d.split('-')[2])
+
+            date = datetime.datetime(year, month, day)
+            document = db.signups.find_one({'date': date})
+
+            if not document:
+                result = db.signups.insert({'date': date,
+                                            'members_on_shift': [member_name]})
+            else:
+                document['members_on_shift'].append(member_name)
+                result = db.signups.update_one({'_id', document['_id']},
+                                               document)
+
+            print(result)
+
         result = 'Thanks {}!\n'.format(member_name)
         result += 'You are signed up for the following shifts:\n'
         return result + ', '.join(map(str, dates))
