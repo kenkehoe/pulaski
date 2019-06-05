@@ -6,7 +6,7 @@ import dash_html_components as html
 from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
 db = client['fire_coverage']
-member_names = [d['name'] for d in db.members.find()]
+member_list = [d['name'] for d in db.members.find()]
 
 member_list_dropdown = dcc.Dropdown(id = 'member-list-dropdown',
                                     options = [{'label': i, 'value': i} for i in member_list],
