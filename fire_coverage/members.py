@@ -1,8 +1,10 @@
 import pickle
 
-class Members:
+from os import makedirs
+from os.path import exists
+from os.path import dirname
 
-    from os.path import exists
+class Members:
     
     def __init__(self, filename):
         import logging
@@ -17,6 +19,7 @@ class Members:
                 self.members = pickle.load(f)
         else:
             self.logger.warning("File %s does not exist.  A new file will be created." % self.filename)
+            makedirs(dirname(self.filename))
 
     def add_member(self, email, entry):
         assert('@' in email)
