@@ -47,16 +47,16 @@ def signup(n_clicks, member_name):
             month = int(d.split('-')[1])
             day = int(d.split('-')[2])
 
-            date = datetime.datetime(year, month, day)
-            document = db.signups.find_one({'date': date})
+            dt = datetime.datetime(year, month, day)
+            document = db.signups.find_one({'datetime': dt})
 
             if not document:
-                result = db.signups.insert({'date': date,
+                result = db.signups.insert({'datetime': dt,
                                             'members_on_shift': [member_name]})
             else:
                 document['members_on_shift'].append(member_name)
-                result = db.signups.update_one({'_id', document['_id']},
-                                               document)
+                result = db.signups.update_one({'_id': document['_id']},
+                                               {'$set': document})
 
             print(result)
 
@@ -147,14 +147,25 @@ def generate_calendar(current_month, current_year):
     days = ['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun']
     header = [html.Tr([html.Th(day) for day in days])]
     body = list()
+
     for week in cal:
         row = list()
         for day in week:
-            if day > 0:
-                day_header = html.Tr([html.Th(day)])                
-                member_name = random.choice(member_names)
-                day_row = html.Tr([html.Td(member_name)])
-                day_table = html.Table([day_header, day_row])
+            if day:
+                day_header = html.Tr([html.Th(day)])
+                
+                dt = datetime.datetime(year, month, day)                
+                shift_document = db.signups.find_one({'datetime': dt})
+
+                members_on_shift_rows = [day_header]
+                if shift_document:
+                    for member_name in shift_document['members_on_shift']:
+                        print("Thank you for your service, %s" % member_name)
+                        members_on_shift_rows.append(html.Tr([html.Td(member_name)]))
+                else:                    
+                    members_on_shift_rows.append(html.Tr([html.Td('---')]))
+
+                day_table = html.Table(members_on_shift_rows)
                 row.append(html.Td(day_table))
             else:
                 row.append(html.Td())
