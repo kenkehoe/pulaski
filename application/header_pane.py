@@ -39,8 +39,9 @@ single_date = \
                                       dt.now())]
              )
 
+print(dt.now())
 calendar = html.Div([html.Div([html.Button('<', id='previous-month-button', className = 'four columns'),
-                              html.Div('February', id='current-month', className = 'four columns'),
+                              html.Div('June', id='current-month', className = 'four columns'),
                                html.Button('>', id='next-month-button', className = 'four columns')],
                               className = 'row'),
                      html.Div([html.Button('<', id='previous-year-button', className = 'four columns'),
