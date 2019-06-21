@@ -1,6 +1,7 @@
-# fire_coverage
+# Pulaski
 
 ## Introduction
+This is just a tool.  Pulaski's are tools that don't cut line by themselves.  Firefighters have to do the work.
 
 ## Setup
 ```
