@@ -162,8 +162,11 @@ def generate_calendar(current_month, current_year):
                     for member_name in shift_document['members_on_shift']:
                         print("Thank you for your service, %s" % member_name)
                         members_on_shift_rows.append(html.Tr([html.Td(member_name)]))
-                else:                    
-                    members_on_shift_rows.append(html.Tr([html.Td('---')]))
+                    for _ in range(len(shift_document['members_on_shift']), 3):
+                        members_on_shift_rows.append(html.Tr([html.Td('[________]')]))
+                else:
+                    for _ in range(3):
+                        members_on_shift_rows.append(html.Tr([html.Td('[________]')]))
 
                 day_table = html.Table(members_on_shift_rows)
                 row.append(html.Td(day_table))
