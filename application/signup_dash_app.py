@@ -127,13 +127,13 @@ def which_shift(dt):
     Given a datetime object determine whether that day
     is A, B, or C shift given Jun 1&2 2019 is A-shift.
     return dict :
-    {'shift': 'A', 'name': 'Roberts'}
-    {'shift': 'B', 'name': 'Vinnola'}
-    {'shift': 'C', 'name': 'Schmidtmann'}
+    {'shift': 'A', 'name': 'Roberts', 'color': 'red'}
+    {'shift': 'B', 'name': 'Vinnola', 'color': 'green'}
+    {'shift': 'C', 'name': 'Schmidtmann', 'color': 'blue'}
     '''
-    result = [{'shift': 'A', 'name': 'Roberts'},
-              {'shift': 'B', 'name': 'Vinnola'},
-              {'shift': 'C', 'name': 'Schmidtmann'}]
+    result = [{'shift': 'A', 'name': 'Roberts', 'color': 'red'},
+              {'shift': 'B', 'name': 'Vinnola', 'color': 'blue'},
+              {'shift': 'C', 'name': 'Schmidtmann', 'color': 'green'}]
     a_shift_start = datetime.datetime(2019,6,1)
     index = int(((dt - a_shift_start).days % 6)/2)
     return result[index]
@@ -173,7 +173,9 @@ def generate_calendar(current_month, current_year):
                 # Jun 1,2 was A-shift
                 dt = datetime.datetime(year, month, day)
                 shift_captain = which_shift(dt)
-                day_header = html.Tr([html.Th("%d - %s" % (day, shift_captain['shift']))])
+                day_header_text = "%d - %s" % (day, shift_captain['shift'])
+                day_header_style = {'color': shift_captain['color']}
+                day_header = html.Tr([html.Th(day_header_text, style=day_header_style)])
                 shift_document = db.signups.find_one({'datetime': dt})
 
                 members_on_shift_rows = [day_header]
