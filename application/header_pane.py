@@ -52,7 +52,7 @@ calendar = html.Div([html.Div([html.Button('<', id='previous-month-button', clas
                     style = {'width' : '100%'})
 
 header_pane = html.Div([html.H1("Nederland Fire Protection District"),
-                        html.H2("Volunteer Night Shift Sign Up"),
+                        html.H2("Volunteer Night Coverage Sign Up"),
                         html.Hr(),                        
                         member_list_dropdown,
                         html.Hr(),
