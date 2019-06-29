@@ -27,5 +27,8 @@ if args.remove:
         member = member_collection.remove({'name': args.name})
     elif args.email:
         member = member_collection.remove({'email': args.email})
-                
+
+if args.pprint:
+    for document in db.members.find():
+        print("%s: %s" % (document['name'], document['email']))
 print("There are %d members." % db.members.count_documents({}))
