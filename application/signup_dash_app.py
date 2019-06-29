@@ -138,12 +138,12 @@ def which_shift(dt):
     index = int(((dt - a_shift_start).days % 6)/2)
     return result[index]
 
-@app.callback(Output('calendar-table', 'children'),
+
+@app.callback(Output('sign-up-stats', 'children'),
               [Input('current-month', 'children'),
                Input('current-year', 'children')])
-def generate_calendar(current_month, current_year):
+def sign_up_stats(current_month, current_year):
 
-    import random
     import calendar
 
     from pymongo import MongoClient
@@ -161,8 +161,52 @@ def generate_calendar(current_month, current_year):
     
     cal = calendar.monthcalendar(year, month)
 
+    # calculate statistics first
+    n_days_in_month = 0
+    coverage = {0:0, 1:0, 2:0, 3:0}
+    for week in cal:
+        for day in week:            
+            if day:
+                n_days_in_month+=1
+                dt = datetime.datetime(year, month, day)
+                shift_document = db.signups.find_one({'datetime': dt})
+                if shift_document:
+                    coverage[len(shift_document['members_on_shift'])] += 1
+                else:
+                    coverage[0] += 1
+                    
+    result = "n days no coverage = %d\n" % coverage[0]
+    result += "n days minimum coverage = %d\n" % coverage[1]
+    result += "n days partial coverage = %d\n" % coverage[2]
+    result += "n days full coverage = %d\n" % coverage[3]
+                
+    return result
+
+
+@app.callback(Output('calendar-table', 'children'),
+              [Input('current-month', 'children'),
+               Input('current-year', 'children')])
+def generate_calendar(current_month, current_year):
+
+    import calendar
+
+    from pymongo import MongoClient
+    client = MongoClient('mongodb://localhost:27017/')
+    db = client['fire_coverage']
+
+    member_names = [d['name'] for d in db.members.find()]
+    
+    months = ['January', 'February', 'March', 'April',              
+              'May', 'June', 'July', 'August', 'September',              
+              'October', 'November', 'December']
+    
+    month = months.index(current_month) + 1
+    year = int(current_year)
+    
+    cal = calendar.monthcalendar(year, month)
+    
     days = ['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun']
-    header = [html.Tr([html.Th(day) for day in days])]
+    header =[html.Tr([html.Th(day) for day in days])]
     body = list()
 
     for week in cal:
